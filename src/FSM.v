@@ -49,8 +49,8 @@ module FSM(
 			  is_open = 0;
 			  location = 2'b00;    // Default to the first slot
         end else begin
-		  is_open = 0;
-        is_full = 0;
+			is_open = 0;
+        	is_full = 0;
 		  
 		  // Parking management logic
 		  case (capacity)
