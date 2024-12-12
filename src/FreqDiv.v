@@ -12,8 +12,8 @@ module FreqDiv(input clk,
         clk_1Hz=0;
     end
 
-    always @ (posedge clk or posedge reset) begin
-        if (reset) begin
+    always @ (posedge clk or reset) begin
+        if (~reset) begin
             counter_2Hz=0;
             counter_1Hz=0;
             clk_2Hz=0;
