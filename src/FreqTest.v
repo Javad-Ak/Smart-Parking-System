@@ -6,7 +6,7 @@ module FreqTest;
     wire clk_2Hz;
     wire clk_1Hz;
 
-    FreqDiv uut (.clk(clk), .reset(reset), .clk_1Hz(clk_1Hz), .clk_2Hz(clk_2Hz));
+    FreqDiv uut (.clk(clk), .reset(reset), .clk_500Hz(clk_500Hz), .clk_1Hz(clk_1Hz), .clk_2Hz(clk_2Hz));
 
     initial begin
         $dumpfile("Frtest.vcd");
