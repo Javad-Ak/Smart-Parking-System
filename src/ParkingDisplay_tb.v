@@ -57,7 +57,7 @@ module ParkingDisplay_tb;
             first_empty = 2'd0;
 
         // End simulation
-        #20 $stop;
+        #20 $finish;
     end
 
     // Dump waveform data for GTKWave

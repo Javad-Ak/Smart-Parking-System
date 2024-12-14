@@ -27,21 +27,21 @@ module FreqDiv(input clk,
         end
 
         else begin
-            if (counter_2Hz == 20_000_000 - 1) begin
+            if (counter_2Hz == 10_000_000 - 1) begin
                 counter_2Hz = 0;
                 clk_2Hz = ~clk_2Hz;
             end
             else begin
                 counter_2Hz = counter_2Hz + 1;
             end
-            if (counter_1Hz == 40_000_000 - 1) begin
+            if (counter_1Hz == 20_000_000 - 1) begin
                 counter_1Hz = 0;
                 clk_1Hz = ~clk_1Hz;
             end
             else begin
                 counter_1Hz = counter_1Hz + 1;
             end
-            if (counter_500Hz == 80_000 - 1) begin
+            if (counter_500Hz == 40_000 - 1) begin
                 counter_500Hz = 0;
                 clk_500Hz = ~clk_500Hz;
             end
