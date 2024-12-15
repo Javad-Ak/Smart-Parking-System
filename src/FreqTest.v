@@ -5,16 +5,17 @@ module FreqTest;
     reg reset;
     wire clk_2Hz;
     wire clk_1Hz;
+    wire clk_500Hz;
 
     FreqDiv uut (.clk(clk), .reset(reset), .clk_500Hz(clk_500Hz), .clk_1Hz(clk_1Hz), .clk_2Hz(clk_2Hz));
 
     initial begin
         $dumpfile("Frtest.vcd");
-        $dumpvars(0, FreqTest);
+        $dumpvars(0, clk_1Hz, clk_2Hz, clk_500Hz);
         clk = 0;
-        reset = 1; 
-        #50 reset = 0;
-        #200;
+        reset = 0; 
+        #50 reset = 1;
+        #1_000_000_000;
         $finish;
     end
 
