@@ -8,17 +8,11 @@
 // Module Name:    FSM 
 // Project Name:   PMS
 // Target Devices: Spartan 3
-// Tool versions:  ---
-// Description:    ---
 //
-// Dependencies:   ---
-//
-// Revision: 
 // Revision 0.01 - File Created
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-
 
 module FSM(
     input clk,                // Clock signal
@@ -32,7 +26,6 @@ module FSM(
     output reg [2:0] capacity,// Current remaining capacity
     output reg [1:0] location // First available empty slot
 );
-
     // Parameters for states based on remaining capacity
     parameter S4 = 3'b100;  // 4 slots remaining (Idle)
     parameter S3 = 3'b011;  // 3 slots remaining
@@ -43,87 +36,62 @@ module FSM(
     // State change logic
     always @(posedge clk or reset) begin
     if (~reset) begin
-        capacity = S4;
-        spots = 4'b0000;     // All spots are free (0 = free, 1 = occupied)
-        is_full = 0;
-        is_open = 0;
-        location = 2'b00;    // Default to the first slot
-    end else begin
-        is_open = 0;
-        is_full = 0;
-        
+    capacity = S4;
+    spots = 4'b0000;     // All spots are free (0 = free, 1 = full)
+    is_full = 0;
+    is_open = 0;
+    location = 2'b00;    // Default to the first slot
+
+    end else begin    
+    // Door handling
+    is_full = 0;
+    is_open = 0;
+    if (entry_signal) begin
+        if (capacity==S0) is_full = 1;
+        else is_open = 1;
+    end 
+    if (exit_signal && (spots[exit_slot])) is_open = 1;
+
     // Parking management logic
     case (capacity)
-            S3, S2, S1: begin
-                if (entry_signal) begin
-                    // Find the first available spot
-                    if (spots[0] == 1'b0) location = 2'b00;
-                    else if (spots[1] == 1'b0) location = 2'b01;
-                    else if (spots[2] == 1'b0) location = 2'b10;
-                    else if (spots[3] == 1'b0) location = 2'b11;
-
-                    // fill the spot
-                    spots[location] = 1'b1;
-                    is_open = 1;
-                end else if (exit_signal) begin
-                    // Free the selected spot
-                    spots[exit_slot] = 1'b0;
-                    is_open = 1;
-                end
-            end
+        S3, S2, S1: begin
+        if (entry_signal) begin
+            // fill the spot
+            spots[location] = 1'b1;
+            capacity--;
+        end
+        if (exit_signal && spots[exit_slot]) begin
+            // Free the selected spot
+            spots[exit_slot] = 1'b0;
+            capacity++;
+        end
+        end
             
         S4: begin
-                if (entry_signal) begin
-                    // fill the first spot
-                    spots[0] = 1'b1;
-                    is_open = 1;
-                end
+            if (entry_signal) begin
+                // fill the first spot
+                spots[0] = 1'b1;
+                capacity--;
             end
+        end
             
         S0: begin
-                if (exit_signal) begin
-                    // Free the selected spot
-                    spots[exit_slot] = 1'b0;
-                end
+            if (exit_signal) begin
+                // Free the selected spot
+                spots[exit_slot] = 1'b0;
+                capacity++;
             end
-    endcase
-        
-    // Next state logic
-    case (capacity)
-        S4: begin
-                if (entry_signal) 
-                    capacity = S3;
         end
+    endcase  
+ 
+    // Find the first available spot
+    location = 2'bzz;
+    if (spots[0] == 1'b0) location = 2'b00;
+    else if (spots[1] == 1'b0) location = 2'b01;
+    else if (spots[2] == 1'b0) location = 2'b10;
+    else if (spots[3] == 1'b0) location = 2'b11;
 
-        S3: begin
-                if (entry_signal)
-                    capacity = S2;
-                else if (exit_signal)
-                    capacity = S4;
-        end
-
-        S2: begin
-                if (entry_signal)
-                    capacity = S1;
-                else if (exit_signal)
-                    capacity = S3;
-        end
-
-        S1: begin
-                if (entry_signal)
-                    capacity = S0;
-                else if (exit_signal)
-                    capacity = S2;
-        end
-
-        S0: begin
-                is_full = 1; // Parking is full
-                if (exit_signal)
-                    capacity = S1;
-        end
-    endcase
     end
-
     end
 	 
 endmodule

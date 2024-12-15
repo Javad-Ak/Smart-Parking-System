@@ -57,17 +57,17 @@ module FSM_TB;
         end
 
         // Apply each test vector
-        for (i = 0; i < 20; i = i + 1) begin
+        for (i = 0; i < 20; i++) begin
             // Apply test inputs
             {entry_signal, exit_signal, exit_slot} = test_data[i];
             #10; // Wait for a clock cycle to stabilize signals
 
             // Write outputs to file
-            $fwrite(outfile, "%b %d %d", spots, capacity, location);
-            if (is_open)
-                $fwrite(outfile, " door");
+            $fwrite(outfile, "%b [%d,%d]", spots, capacity, location);
             if (is_full)
                 $fwrite(outfile, " full");
+            if (is_open)
+                $fwrite(outfile, " door");
             $fwrite(outfile, "\n");
         end
 
