@@ -40,8 +40,6 @@ module FSM(
     parameter S1 = 3'b001;  // 1 slot remaining
     parameter S0 = 3'b000;  // 0 slots remaining (Full)
 
-	reg  ftemp = 0;
-	reg  otemp = 0;
     // State change logic
     always @(posedge clk or reset) begin
         if (~reset) begin
@@ -51,30 +49,8 @@ module FSM(
 			  is_open = 0;
 			  location = 2'b00;    // Default to the first slot
         end else begin
-			if (is_open) begin
-				if (otemp == 1'b1) begin
-					is_open = 0;
-					otemp = 0;
-				end
-				else begin
-					otemp = otemp + 1;
-				end
-			end
-			else begin
-				otemp = 0;
-			end
-        	if (is_full) begin
-				if (ftemp == 1'b1) begin
-					is_full = 0;
-					ftemp = 0;
-				end
-				else begin
-					ftemp = ftemp + 1;
-				end
-			end
-			else begin
-				ftemp = 0;
-			end
+			is_open = 0;
+			is_full = 0;
 		  
 		  // Parking management logic
 		  case (capacity)
