@@ -2,7 +2,7 @@ module FSM_TB;
 
     // Inputs
     reg clk;
-    reg reset;
+    reg reset; // Active-low reset
     reg entry_signal;
     reg exit_signal;
     reg [1:0] exit_slot;
@@ -17,7 +17,7 @@ module FSM_TB;
     // Instantiate the FSM module
     FSM uut (
         .clk(clk),
-        .reset(reset),
+        .reset(reset), // Active-low reset
         .entry_signal(entry_signal),
         .exit_signal(exit_signal),
         .exit_slot(exit_slot),
@@ -32,35 +32,49 @@ module FSM_TB;
     always #5 clk = ~clk;
 
     // Test sequence variables
-    reg [3:0] test_data [0:19]; // Array to store the test inputs
+    reg [3:0] test_data [0:19]; // Memory array to store input data
     integer i;
     integer outfile; // File handle for output
 
-    // Read inputs and output results
+    // Main test process
     initial begin
         // Initialize signals
         clk = 0;
-        reset = 0;
-        #10;
-        reset = 1; // Release reset after some time
+        reset = 0; // Assert reset (active-low) initially
+        entry_signal = 0;
+        exit_signal = 0;
+        exit_slot = 0;
 
-        // Open output file
+        // Hold reset for some time and release
+        #10 reset = 1;
+
+        // Open input and output files
+        $readmemb("../doc/in.txt", test_data); // Read inputs into test_data array
         outfile = $fopen("../doc/out.txt", "w");
-
-        // Read test data from input file
-        $readmemb("../doc/in.txt", test_data);
+        if (outfile == 0) begin
+            $display("Error: Could not open out.txt for writing.");
+            $finish;
+        end
 
         // Apply each test vector
         for (i = 0; i < 20; i = i + 1) begin
+            // Apply test inputs
             {entry_signal, exit_signal, exit_slot} = test_data[i];
-            #10; // Wait for a clock cycle to apply changes
+            #10; // Wait for a clock cycle to stabilize signals
 
-            // Write results to output file
-            $fdisplay(outfile, "%b %d %d %b %b", spots, capacity, location, is_full, is_open);
+            // Write outputs to file
+            $fwrite(outfile, "%b %d %d", spots, capacity, location);
+            if (is_open)
+                $fwrite(outfile, " door");
+            if (is_full)
+                $fwrite(outfile, " full");
+            $fwrite(outfile, "\n");
         end
 
-        $fclose(outfile); // Close the output file
-        $finish; // End simulation
+        // Close output file and finish
+        $fclose(outfile);
+        $display("Simulation complete. Results written to out.txt.");
+        $finish;
     end
 
 endmodule
