@@ -1,5 +1,3 @@
-`timescale 1ms / 1us
-
 module Multiplexed_display_tb;
     // Testbench signals
     reg clk_500Hz;

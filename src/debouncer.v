@@ -1,6 +1,6 @@
-//This module is designed in order to stabilize the input
-//if the input change for a short time the output doesn't change
-//if the input doesn't change for 1_000_000 clock it appears in output
+// This module is designed in order to stabilize the input
+// if the input change for a short time the output doesn't change
+// if the input doesn't change for 1_000_000 clock it appears in output
 
 module Debouncer (
     input clk,

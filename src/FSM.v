@@ -1,19 +1,3 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: AUT
-// Engineers: Mohammad Javad Akbari, Parsa Asadi
-// 
-// Create Date:    13:32:48 12/08/2024 
-// Design Name: 	 FSM
-// Module Name:    FSM 
-// Project Name:   PMS
-// Target Devices: Spartan 3
-//
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
-
 module FSM(
     input clk,                // Clock signal
     input reset,              // Reset signal (active low)

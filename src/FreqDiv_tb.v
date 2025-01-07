@@ -1,5 +1,3 @@
-`timescale 1ns/1ps
-
 module FreqDiv_tb;
     reg clk;
     reg reset;

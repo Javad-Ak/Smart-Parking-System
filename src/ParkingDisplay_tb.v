@@ -1,5 +1,3 @@
-`timescale 1ms / 1ns  // Use milliseconds for time units, nanoseconds for precision
-
 module ParkingDisplay_tb;
 
   // Testbench signals
@@ -67,4 +65,3 @@ module ParkingDisplay_tb;
   end
 
 endmodule
-

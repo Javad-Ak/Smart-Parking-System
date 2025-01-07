@@ -1,5 +1,3 @@
-`timescale 1ns/1ps
-
 module Debouncer_tb;
     reg clk;
     reg inButton;
@@ -9,7 +7,7 @@ module Debouncer_tb;
 
     initial begin
         $dumpfile("test.vcd");
-        $dumpvars(0, DebTest);
+        $dumpvars(0, Debouncer_tb);
         clk = 0;
         inButton = 0;
         #15 inButton = 1;
