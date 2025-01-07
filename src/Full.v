@@ -2,7 +2,7 @@ module Full (
     input clk_1Hz,          
     input reset,            
     input full_signal,      
-    output reg fullLED          
+    output reg fullLED        
 );
 
     reg [2:0] counter = 3'd0; // 3-bit counter for 6 cycles (3 on/off periods)
