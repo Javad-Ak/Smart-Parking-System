@@ -1,6 +1,6 @@
 `timescale 1ms / 1us
 
-module tb_multiplexed_display;
+module Multiplexed_display_tb;
 
     // Testbench signals
     reg clk_500Hz;
@@ -15,7 +15,7 @@ module tb_multiplexed_display;
     wire colon;
 
     // Instantiate the module
-    multiplexed_display uut (
+    Multiplexed_display uut (
         .clk_500Hz(clk_500Hz),
         .reset(reset),
         .mode(mode),
@@ -83,7 +83,7 @@ module tb_multiplexed_display;
     // Monitor the values
     initial begin
         $dumpfile("multest.vcd");
-        $dumpvars(0, tb_multiplexed_display);
+        $dumpvars(0, Multiplexed_display_tb);
     end
 
 endmodule

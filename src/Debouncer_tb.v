@@ -1,11 +1,11 @@
 `timescale 1ns/1ps
 
-module DebTest;
+module Debouncer_tb;
     reg clk;
     reg inButton;
     wire outButton;
 
-    debouncer uut(.clk(clk), .inButton(inButton), .outButton(outButton));
+    Debouncer uut(.clk(clk), .inButton(inButton), .outButton(outButton));
 
     initial begin
         $dumpfile("test.vcd");
