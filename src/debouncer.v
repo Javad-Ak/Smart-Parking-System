@@ -2,7 +2,7 @@
 //if the input change for a short time the output doesn't change
 //if the input doesn't change for 1_000_000 clock it appears in output
 
-module debouncer (
+module Debouncer (
     input clk,
     input inButton,
     output reg outButton

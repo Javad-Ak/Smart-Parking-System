@@ -1,33 +1,8 @@
-
-`timescale 1ns / 1ps
-
-////////////////////////////////////////////////////////////////////////////////
-// Company: AUT
-// Engineers: Mohammad Javad Akbari, Parsa Asadi
-//
-// Create Date:   14:03:35 12/08/2024
-// Design Name:   FSM
-// Module Name:   /home/javad/ISE/Project/FSM_TB.v
-// Project Name:  Project
-// Target Device: ---
-// Tool versions: ---
-// Description:   ---
-//
-// Verilog Test Fixture created by ISE for module: FSM
-//
-// Dependencies:  ---
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments: ---
-// 
-////////////////////////////////////////////////////////////////////////////////
-
 module FSM_TB;
 
     // Inputs
     reg clk;
-    reg reset;
+    reg reset; // Active-low reset
     reg entry_signal;
     reg exit_signal;
     reg [1:0] exit_slot;
@@ -39,10 +14,10 @@ module FSM_TB;
     wire [2:0] capacity;
     wire [1:0] location;
 
-    // Instantiate the ParkingSystem module
+    // Instantiate the FSM module
     FSM uut (
         .clk(clk),
-        .reset(reset),
+        .reset(reset), // Active-low reset
         .entry_signal(entry_signal),
         .exit_signal(exit_signal),
         .exit_slot(exit_slot),
@@ -56,48 +31,50 @@ module FSM_TB;
     // Clock generation
     always #5 clk = ~clk;
 
-    // Test sequence
+    // Test sequence variables
+    reg [3:0] test_data [0:19]; // Memory array to store input data
+    integer i;
+    integer outfile; // File handle for output
+
+    // Main test process
     initial begin
-        // Initialize inputs
+        // Initialize signals
         clk = 0;
-        reset = 0;
+        reset = 0; // Assert reset (active-low) initially
         entry_signal = 0;
         exit_signal = 0;
-        exit_slot = 2'b00;
+        exit_slot = 0;
 
-        // Enable machine
-        #10 reset = 1; 
+        // Hold reset for some time and release
+        #10 reset = 1;
 
-        // Test case 1: First car enters
-        #10 entry_signal = 1;
-        #10 entry_signal = 0; // Simulate a short entry pulse
+        // Open input and output files
+        $readmemb("../doc/in.txt", test_data); // Read inputs into test_data array
+        outfile = $fopen("../doc/out.txt", "w");
+        if (outfile == 0) begin
+            $display("Error: Could not open out.txt for writing.");
+            $finish;
+        end
 
-        // Test case 2: Second car enters
-        #10 entry_signal = 1;
-        #10 entry_signal = 0;
+        // Apply each test vector
+        for (i = 0; i < 20; i++) begin
+            // Apply test inputs
+            {entry_signal, exit_signal, exit_slot} = test_data[i];
+            #10; // Wait for a clock cycle to stabilize signals
 
-        // Test case 3: Third car enters
-        #10 entry_signal = 1;
-        #10 entry_signal = 0;
+            // Write outputs to file
+            $fwrite(outfile, "%b [%d,%d]", spots, capacity, location);
+            if (is_full)
+                $fwrite(outfile, " full");
+            if (is_open)
+                $fwrite(outfile, " door");
+            $fwrite(outfile, "\n");
+        end
 
-        // Test case 4: Fourth car enters (parking is full)
-        #10 entry_signal = 1;
-        #10 entry_signal = 0;
-
-        // Check is_full signal
-        #10;
-
-        // Test case 5: A car exits from slot 2
-        #10 exit_signal = 1;
-        exit_slot = 2'b10; // Specify the slot
-        #10 exit_signal = 0;
-
-        // Test case 6: Another car enters
-        #10 entry_signal = 1;
-        #10 entry_signal = 0;
-
-        #50;
-		  $finish;
+        // Close output file and finish
+        $fclose(outfile);
+        $display("Simulation complete. Results written to out.txt.");
+        $finish;
     end
 
 endmodule

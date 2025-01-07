@@ -1,4 +1,4 @@
-module multiplexed_display (
+module Multiplexed_display (
     input clk_500Hz,    
     input reset,                
     input mode,         
