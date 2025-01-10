@@ -1,3 +1,4 @@
+
 module FSM(
     input clk,                // Clock signal
     input reset,              // Reset signal (active low)
@@ -49,12 +50,12 @@ module FSM(
         if (entry_signal) begin
             // fill the spot
             spots[location] = 1'b1;
-            capacity--;
+            capacity = capacity - 1;
         end
         if (exit_signal && spots[exit_slot]) begin
             // Free the selected spot
             spots[exit_slot] = 1'b0;
-            capacity++;
+            capacity = capacity + 1;
         end
         end
             
@@ -62,7 +63,7 @@ module FSM(
             if (entry_signal) begin
                 // fill the first spot
                 spots[0] = 1'b1;
-                capacity--;
+                capacity = capacity - 1;
             end
         end
             
@@ -70,7 +71,7 @@ module FSM(
             if (exit_signal) begin
                 // Free the selected spot
                 spots[exit_slot] = 1'b0;
-                capacity++;
+                capacity = capacity + 1;
             end
         end
     endcase  
