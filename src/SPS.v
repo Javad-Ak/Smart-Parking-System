@@ -26,11 +26,11 @@ wire entry_signal;
 wire exit_signal;   
 wire [1:0] exit_slot;   
 
-Debouncer d1(.clk(clk), .inButton(reset_in), .outButton(reset));
-Debouncer d2(.clk(clk), .inButton(entry_signal_in), .outButton(entry_signal));
-Debouncer d3(.clk(clk), .inButton(exit_signal_in), .outButton(exit_signal));
-Debouncer d4(.clk(clk), .inButton(exit_slot_in[0]), .outButton(exit_slot[0]));
-Debouncer d5(.clk(clk), .inButton(exit_slot_in[1]), .outButton(exit_slot[0]));
+Debouncer d1(.clk(clk), .inButton(reset_in), .outButton(reset), .reset(reset));
+Debouncer d2(.clk(clk), .inButton(entry_signal_in), .outButton(entry_signal), .reset(reset));
+Debouncer d3(.clk(clk), .inButton(exit_signal_in), .outButton(exit_signal), .reset(reset));
+Debouncer d4(.clk(clk), .inButton(exit_slot_in[0]), .outButton(exit_slot[0]), .reset(reset));
+Debouncer d5(.clk(clk), .inButton(exit_slot_in[1]), .outButton(exit_slot[0], .reset(reset)));
 
 FSM m1 (
     .clk(clk),

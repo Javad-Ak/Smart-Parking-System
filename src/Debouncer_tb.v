@@ -1,13 +1,15 @@
 module Debouncer_tb;
     reg clk;
     reg inButton;
+    reg reset;
     wire outButton;
 
-    Debouncer uut(.clk(clk), .inButton(inButton), .outButton(outButton));
+    Debouncer uut(.clk(clk), .inButton(inButton), .outButton(outButton), .reset(reset));
 
     initial begin
         $dumpfile("test.vcd");
         $dumpvars(0, Debouncer_tb);
+        reset = 1;
         clk = 0;
         inButton = 0;
         #15 inButton = 1;

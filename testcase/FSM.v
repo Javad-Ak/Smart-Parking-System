@@ -96,7 +96,7 @@ module FSM(
 	 
 endmodule
 
-module FSM_TB;
+module FSM_tb;
 
     // Inputs
     reg clk;
