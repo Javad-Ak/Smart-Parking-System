@@ -30,7 +30,7 @@ Debouncer d1(.clk(clk), .inButton(reset_in), .outButton(reset), .reset(reset));
 Debouncer d2(.clk(clk), .inButton(entry_signal_in), .outButton(entry_signal), .reset(reset));
 Debouncer d3(.clk(clk), .inButton(exit_signal_in), .outButton(exit_signal), .reset(reset));
 Debouncer d4(.clk(clk), .inButton(exit_slot_in[0]), .outButton(exit_slot[0]), .reset(reset));
-Debouncer d5(.clk(clk), .inButton(exit_slot_in[1]), .outButton(exit_slot[0], .reset(reset)));
+Debouncer d5(.clk(clk), .inButton(exit_slot_in[1]), .outButton(exit_slot[0]), .reset(reset));
 
 FSM m1 (
     .clk(clk),
@@ -65,7 +65,7 @@ Door m4 (
     .DoorLED(doorLED)
 );
 
-// ToDO: time logic must come from FSM (not assign)
+// TODO: time logic must come from FSM (not assign)
 assign
     mode = 1'b0,
     minutes = 6'b000000,

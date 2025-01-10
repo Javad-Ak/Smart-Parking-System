@@ -12,15 +12,15 @@ module Debouncer
    );
 
   parameter CLK_FREQUENCY = 40_000_000,
-  DEBOUNCE_HZ = 2
+    DEBOUNCE_HZ = 2;
 
   localparam COUNT_VALUE = CLK_FREQUENCY / DEBOUNCE_HZ;
   reg [1:0] state;
   reg [25:0] count;
   reg button_sync, button_sync_prev;
 
-  always @(posedge clk or negedge reset_n) begin
-    if (!reset_n) begin
+  always @(posedge clk or negedge reset) begin
+    if (~reset) begin
       state <= 0;
       outButton <= 0;
       count <= 0;

@@ -37,7 +37,7 @@ module FSM(
     if (exit_signal && (spots[exit_slot])) is_open = 1;
      
     // Find the first available spot
-    location = 2'bzz;
+    location = 2'b00;
     if (spots[0] == 1'b0) location = 2'b00;
     else if (spots[1] == 1'b0) location = 2'b01;
     else if (spots[2] == 1'b0) location = 2'b10;
