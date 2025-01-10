@@ -14,15 +14,15 @@ module Debouncer
    );
 
   parameter CLK_FREQUENCY = 40_000_000,
-  DEBOUNCE_HZ = 2
+    DEBOUNCE_HZ = 2;
 
   localparam COUNT_VALUE = CLK_FREQUENCY / DEBOUNCE_HZ;
   reg [1:0] state;
   reg [25:0] count;
   reg button_sync, button_sync_prev;
 
-  always @(posedge clk or negedge reset_n) begin
-    if (!reset_n) begin
+  always @(posedge clk or negedge reset) begin
+    if (~reset) begin
       state <= 0;
       outButton <= 0;
       count <= 0;
@@ -181,7 +181,7 @@ module FSM(
     if (exit_signal && (spots[exit_slot])) is_open = 1;
      
     // Find the first available spot
-    location = 2'bzz;
+    location = 2'b00;
     if (spots[0] == 1'b0) location = 2'b00;
     else if (spots[1] == 1'b0) location = 2'b01;
     else if (spots[2] == 1'b0) location = 2'b10;
@@ -333,57 +333,6 @@ endmodule
 
 
 
-module ParkingDisplay (
-    input clk_500Hz,          // 500 Hz clock input
-    input reset,              // Reset signal
-    input [2:0] capacity,     // Number of free slots (0–4)
-    input [1:0] first_empty,  // First empty slot (0–3)
-    output reg [1:0] anodes,  // Enable lines for 2 digits
-    output reg [6:0] segments // 7-segment control lines (a to g)
-);
-
-    reg digit_select; // 1-bit counter for digit selection (0 or 1)
-
-    // Segment decoding logic for one digit (7 segments)
-    function [6:0] decode_segments(input [3:0] value);
-        case (value)
-            4'd0: decode_segments = 7'b1000000; // Display 0
-            4'd1: decode_segments = 7'b1111001; // Display 1
-            4'd2: decode_segments = 7'b0100100; // Display 2
-            4'd3: decode_segments = 7'b0110000; // Display 3
-            4'd4: decode_segments = 7'b0011001; // Display 4
-            default: decode_segments = 7'b1111111; // Blank (all OFF)
-        endcase
-    endfunction
-
-    // Digit selection logic
-    always @(posedge clk_500Hz or reset) begin
-        if (~reset) begin
-            digit_select = 1'b0; // Reset to first digit
-        end else begin
-            digit_select = ~digit_select; // Toggle between 0 and 1
-        end
-    end
-
-    // Anode enable and segment control logic
-    always @(*) begin
-        case (digit_select)
-            1'b0: begin
-                anodes = 2'b10;                      // Enable left digit (Capacity)
-                segments = decode_segments(capacity); // Decode capacity
-            end
-            1'b1: begin
-                anodes = 2'b01;                      // Enable right digit (First Empty Slot)
-                segments = decode_segments(first_empty); // Decode first empty slot
-            end
-        endcase
-    end
-
-endmodule
-
-
-
-
 module SPS(
     input clk,                  // Clock signal
     input reset_in,             // Reset signal (active low)
@@ -416,7 +365,7 @@ Debouncer d1(.clk(clk), .inButton(reset_in), .outButton(reset), .reset(reset));
 Debouncer d2(.clk(clk), .inButton(entry_signal_in), .outButton(entry_signal), .reset(reset));
 Debouncer d3(.clk(clk), .inButton(exit_signal_in), .outButton(exit_signal), .reset(reset));
 Debouncer d4(.clk(clk), .inButton(exit_slot_in[0]), .outButton(exit_slot[0]), .reset(reset));
-Debouncer d5(.clk(clk), .inButton(exit_slot_in[1]), .outButton(exit_slot[0], .reset(reset)));
+Debouncer d5(.clk(clk), .inButton(exit_slot_in[1]), .outButton(exit_slot[0]), .reset(reset));
 
 FSM m1 (
     .clk(clk),
@@ -451,7 +400,7 @@ Door m4 (
     .DoorLED(doorLED)
 );
 
-// ToDO: time logic must come from FSM (not assign)
+// TODO: time logic must come from FSM (not assign)
 assign
     mode = 1'b0,
     minutes = 6'b000000,
