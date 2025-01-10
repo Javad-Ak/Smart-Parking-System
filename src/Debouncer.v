@@ -1,11 +1,14 @@
-module Debouncer (
-   input clk,     
-   input reset, 
-   input inButton,  
-   output reg outButton
-);
-  parameter CLK_FREQUENCY = 40_000_000;
-  parameter DEBOUNCE_HZ = 2;
+module button_debounce
+  #(
+    parameter CLK_FREQUENCY = 40_000_000,
+    DEBOUNCE_HZ = 2
+  )
+  (
+    input clk,         // clock
+    input reset,       // asynchronous reset
+    input inButton,    // bouncy button
+    output reg outButton // debounced 1-cycle signal
+  );
 
   localparam COUNT_VALUE = CLK_FREQUENCY / DEBOUNCE_HZ;
   reg [1:0] state;
@@ -13,7 +16,7 @@ module Debouncer (
   reg button_sync, button_sync_prev;
 
   always @(posedge clk or negedge reset) begin
-    if (~reset) begin
+    if (!reset) begin
       state <= 0;
       outButton <= 0;
       count <= 0;
@@ -26,7 +29,7 @@ module Debouncer (
 
       case (state)
         0: begin
-          if (button_sync && !button_sync_prev) begin // rising edge detection
+          if (button_sync && !button_sync_prev) begin // Detect rising edge
             state <= 1;
             count <= 0;
           end
@@ -35,12 +38,11 @@ module Debouncer (
           if (count < COUNT_VALUE - 1) begin
             count <= count + 1;
           end else begin
-            outButton <= 1; // pulse
+            outButton <= 1; // Generate a single pulse
             state <= 0;
           end
         end
       endcase
     end
   end
-
 endmodule
