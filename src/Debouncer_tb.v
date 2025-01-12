@@ -1,26 +1,34 @@
+
+`timescale 1ns/1ps
+
+// important: set (parameter COUNT_VALUE = 2) before testing
 module Debouncer_tb;
-    reg clk;
-    reg inButton;
-    reg reset;
-    wire outButton;
+    reg clk;             // 40 MHz clock signal
+    reg reset;           // Reset signal
+    reg inButton;        // Noisy button input signal
+    wire outButton;      // Debounced output signal
 
-    Debouncer uut(.clk(clk), .inButton(inButton), .outButton(outButton), .reset(reset));
+    // Instantiate the debouncer module
+    Debouncer uut (
+        .clk(clk),
+        .reset(reset),
+        .inButton(inButton),
+        .outButton(outButton)
+    );
 
+    // Clock generation: Generate a 40 MHz clock (period = 25ns)
+    always #12.5 clk = ~clk;  // 40 MHz clock
+
+    // Test sequence
     initial begin
-        $dumpfile("test.vcd");
-        $dumpvars(0, Debouncer_tb);
-        reset = 1;
         clk = 0;
+        reset = 0;
         inButton = 0;
-        #15 inButton = 1;
-        #10 inButton = 0;
-        #10 inButton = 1;
-        #100 inButton = 1;
-        #200 $finish;
+
+        #100 reset = 1;
+        inButton = 1;   
+        
+        #1000 $finish;
     end
-
-    always #5 clk = ~clk;
-
-
 
 endmodule

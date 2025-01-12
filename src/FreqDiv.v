@@ -1,3 +1,4 @@
+
 module FreqDiv(input clk,
                input reset,
                output reg clk_500Hz,
@@ -7,7 +8,7 @@ module FreqDiv(input clk,
     reg [24:0] counter_2Hz;
     reg [25:0] counter_1Hz;
 
-    always @ (posedge clk or reset) begin
+    always @ (posedge clk or negedge reset) begin
         if (~reset) begin
             counter_500Hz=0;
             counter_2Hz=0;

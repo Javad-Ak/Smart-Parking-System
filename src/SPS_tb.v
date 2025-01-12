@@ -1,5 +1,7 @@
+
 `timescale 1ns / 1ps
 
+// important: set (parameter COUNT_VALUE = 2) before testing
 module SPS_tb;
 
     // Inputs
@@ -10,9 +12,8 @@ module SPS_tb;
     reg [1:0] exit_slot_in;
 
     // Outputs
-    wire [3:0] anode;
-    wire [6:0] segments;
-    wire colon;
+    wire [4:0] SEG_SEL;
+    wire [7:0] SEG_DATA;
     wire [3:0] spots;
     wire doorLED;
     wire fullLED;
@@ -21,12 +22,11 @@ module SPS_tb;
     SPS uut (
         .clk(clk),
         .reset_in(reset_in),
-        .entry_signal_in(entry_signal_in),
-        .exit_signal_in(exit_signal_in),
+        .entry_signal_in(entry_signal_in), // active low
+        .exit_signal_in(exit_signal_in), // active low
         .exit_slot_in(exit_slot_in),
-        .anode(anode),
-        .segments(segments),
-        .colon(colon),
+        .SEG_SEL(SEG_SEL),
+        .SEG_DATA(SEG_DATA),
         .spots(spots),
         .doorLED(doorLED),
         .fullLED(fullLED)
@@ -47,18 +47,18 @@ module SPS_tb;
         exit_slot_in = 2'b00;
 
         // Apply reset
-        #25 reset_in = 1;  // Reset for 5ns
+        #300; reset_in = 1; #200;
 
-        // Test 1: Car entering the parking
-        entry_signal_in = 1;  // Car enters
-        #25 entry_signal_in = 0;  // Car entry signal goes low
+        // Test 1: Car entering
+        entry_signal_in = 1; #200; 
+        entry_signal_in = 0; #100;
 
-        // Test 2: Car exiting the parking
-        exit_signal_in = 1;  // Car exits
-        #25 exit_signal_in = 0;  // Car exit signal goes low
+        // Test 2: Car exiting
+        exit_signal_in = 1; #100; 
+        exit_signal_in = 0; #200;
 
         // Finish simulation after some time
-        #100;
+        #1000;
         $finish;
     end
 
