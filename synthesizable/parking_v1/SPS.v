@@ -16,9 +16,6 @@ wire is_open;
 wire is_full;
 wire [2:0] capacity;
 wire [2:0] location;
-wire mode;
-wire [3:0] timer_01;
-wire [3:0] timer_02;
 
 wire [5:0] minutes;
 wire [5:0] seconds;
@@ -46,10 +43,7 @@ FSM m2 (
     .is_full(is_full),
     .spots(spots),
     .capacity(capacity),
-    .location(location),
-	 .mode(mode),
-	 .timer_01(timer_01),
-	 .timer_02(timer_02)
+    .location(location)
 );
 
 Full m3 (
@@ -72,9 +66,6 @@ Multiplexed_display uut (
     .capacity(capacity),
     .empty_slot(location),
     .SEG_SEL(SEG_SEL),
-    .SEG_DATA(SEG_DATA),
-	 .mode(mode),
-	 .timer_01(timer_01),
-	 .timer_02(timer_02)
+    .SEG_DATA(SEG_DATA)
 );
 endmodule
