@@ -9,10 +9,7 @@ module FSM(
     output reg is_full,       // Signal when parking is full
     output reg [3:0] spots,   // Occupied spots
     output reg [2:0] capacity,// Current remaining capacity
-    output reg [2:0] location, // First available empty slot
-    output reg mode,
-    output reg [3:0] timer_01,
-	 output reg [3:0] timer_02
+    output reg [2:0] location // First available empty slot
 );
     // Parameters for states based on remaining capacity
     parameter S4 = 3'b100;  // 4 slots remaining (Idle)
@@ -21,11 +18,8 @@ module FSM(
     parameter S1 = 3'b001;  // 1 slot remaining
     parameter S0 = 3'b000;  // 0 slots remaining (Full)
 	
-	 reg [26:0] counter_f;
-	 reg [26:0] counter_o;
-	 
-    reg [30:0] counter_m;
-    reg [26:0] counter_clk;
+	reg [26:0]counter_f;
+	reg [26:0]counter_o;
 
     // State change logic
     always @(negedge reset or posedge clk) begin
@@ -35,44 +29,9 @@ module FSM(
     is_full = 0;
     is_open = 0;
     location = 3'b111;    // Default to the first slot
-    counter_m = 0;
-    timer_01 = 0;
-	 timer_02 = 0;
-    counter_clk = 0;
-    mode = 0;
-    counter_o = 0;
-    counter_f = 0;
-    end else begin   
 
-    if (exit_slot == 2'b00 && exit_signal && spots[0])
-        mode = 1;
-    
-    if(mode == 1) begin
-        if (counter_m == 160_000_000) begin
-            counter_m = 0;
-            mode = 0;
-        end
-		  else
-            counter_m = counter_m + 1;
-    end
-
-    if (~spots[0] && mode == 0) begin
-        timer_01 = 0;
-		  timer_02 = 0;
-        counter_clk = 0;
-    end
-    else if (mode == 0) begin 
-        if (counter_clk == 39_999_999) begin
-            counter_clk = 0;
-            if (timer_01 == 4'b1001) begin
-                timer_02 = timer_02 + 1;
-                timer_01 = 0;
-            end else timer_01 = timer_01 + 1;
-        end else begin
-		      counter_clk = counter_clk + 1;
-		  end       
-    end
-
+    end else begin    
+    // Door handling
 	if (is_full && counter_f<40_000_000) 
 		counter_f = counter_f + 1;
 	else begin
@@ -94,7 +53,7 @@ module FSM(
     if (exit_signal && (spots[exit_slot])) is_open = 1;
      
     // Find the first available spot
-    location = 3'b111; 
+    location = 3'b111;
     if (spots[0] == 1'b0) location = 3'b000;
     else if (spots[1] == 1'b0) location = 3'b001;
     else if (spots[2] == 1'b0) location = 3'b010;
