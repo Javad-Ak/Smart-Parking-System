@@ -1,2 +1,2 @@
 # Smart-Parking-System
-DLD project at @AUT-CE
+Digital logic design project at @AUT-CE
